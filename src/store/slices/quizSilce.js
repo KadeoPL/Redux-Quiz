@@ -78,6 +78,12 @@ const quziSlice = createSlice({
     
           },
         nextQuestion: (state) => {
+            const currentQuestion = state.questions[state.currentQuestionIndex];
+            const userAnswer = state.answers[currentQuestion.id];
+            if (userAnswer === currentQuestion.correctAnswer) {
+                state.score += 1;
+            }
+            
             if (state.currentQuestionIndex < state.questions.length - 1) {
                 state.currentQuestionIndex += 1;
               }
