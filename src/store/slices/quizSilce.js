@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     questions: [
@@ -68,28 +68,33 @@ const initialState = {
     answers: {},  
 };
 
-const quziSlice = createSlice({
+const quizSlice = createSlice({
     name: 'quiz',
     initialState,
     reducers: {
         answerQuestion: (state, action) => {
             const { questionId, answer } = action.payload;
-            state.answers[questionId] = answer;
-    
-          },
-        nextQuestion: (state) => {
-            const currentQuestion = state.questions[state.currentQuestionIndex];
-            const userAnswer = state.answers[currentQuestion.id];
-            if (userAnswer === currentQuestion.correctAnswer) {
-                state.score += 1;
-            }
+            const question = state.questions.find(q => q.id === questionId);
             
+            if (question) {
+                state.answers[questionId] = answer;
+                
+                if (answer === question.correctAnswer) {
+                    state.score += 1;
+                } else if (state.answers[questionId] !== undefined) {   
+                    if (state.answers[questionId] === question.correctAnswer) {
+                        state.score -= 1;
+                    }
+                }
+            }
+        },
+        nextQuestion: (state) => {
             if (state.currentQuestionIndex < state.questions.length - 1) {
                 state.currentQuestionIndex += 1;
-              }
+            }
         },
         prevQuestion: (state) => {
-            if (state.currentQuestionIndex > 0){
+            if (state.currentQuestionIndex > 0) {
                 state.currentQuestionIndex -= 1;
             }
         },
@@ -101,5 +106,5 @@ const quziSlice = createSlice({
     }
 })
 
-export const {answerQuestion, nextQuestion, prevQuestion, resetQuiz} = quziSlice.actions;
-export default quziSlice.reducer;
+export const { answerQuestion, nextQuestion, prevQuestion, resetQuiz } = quizSlice.actions;
+export default quizSlice.reducer;
