@@ -77,14 +77,15 @@ const quizSlice = createSlice({
             const question = state.questions.find(q => q.id === questionId);
             
             if (question) {
+                const prevAnswer = state.answers[questionId];
                 state.answers[questionId] = answer;
                 
+               
+                if (prevAnswer === question.correctAnswer) {
+                    state.score -= 1;
+                }
                 if (answer === question.correctAnswer) {
                     state.score += 1;
-                } else if (state.answers[questionId] !== undefined) {   
-                    if (state.answers[questionId] === question.correctAnswer) {
-                        state.score -= 1;
-                    }
                 }
             }
         },
@@ -104,7 +105,7 @@ const quizSlice = createSlice({
             state.answers = {};
         },
     }
-})
+});
 
 export const { answerQuestion, nextQuestion, prevQuestion, resetQuiz } = quizSlice.actions;
 export default quizSlice.reducer;
